@@ -69,6 +69,9 @@ pub enum DatabaseViewChange {
     view_id: String,
     field_order: FieldOrder,
   },
+  DidChangeCompactMode {
+    view_id: String,
+  },
 }
 
 pub type ViewChangeSender = broadcast::Sender<DatabaseViewChange>;

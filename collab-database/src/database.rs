@@ -1229,6 +1229,17 @@ impl Database {
       });
   }
 
+  /// Change Compact Mode.
+  pub fn update_compact_mode(&mut self, view_id: &str, compact_mode: bool) {
+    let mut txn = self.collab.transact_mut();
+    self
+      .body
+      .views
+      .update_database_view(&mut txn, view_id, |update| {
+        update.set_compact_mode(compact_mode);
+      });
+  }
+
   /// Returns all the views that the current database has.
   // TODO (RS): Implement the creation of a default view when fetching all database views returns an empty result, with the exception of inline views.
   pub fn get_all_database_views_meta(&self) -> Vec<DatabaseViewMeta> {
@@ -1706,6 +1717,7 @@ impl DatabaseBody {
       DatabaseLayout::Grid,
     );
     inline_view.is_inline = true;
+    inline_view.compact_mode = false;
     inline_view.row_orders.clone_from(&row_orders);
     inline_view.field_orders.clone_from(&field_orders);
     views.insert_view(&mut txn, inline_view);
@@ -1996,6 +2008,7 @@ impl DatabaseBody {
       created_at: params.created_at,
       modified_at: params.modified_at,
       is_inline: false,
+      compact_mode: false,
     };
     // tracing::trace!("create linked view with params {:?}", params);
     self.views.insert_view(txn, view);

@@ -67,6 +67,11 @@ impl<'a, 'b> DatabaseViewUpdate<'a, 'b> {
     self
   }
 
+  pub fn set_compact_mode(self, compact_mode: bool) -> Self {
+    self.map_ref.insert(self.txn, COMPACT_MODE, compact_mode);
+    self
+  }
+
   impl_str_update!(
     set_database_id,
     set_database_id_if_not_none,
@@ -417,6 +422,8 @@ pub fn view_from_map_ref<T: ReadTxn>(map_ref: &MapRef, txn: &T) -> Option<Databa
 
   let is_inline: bool = map_ref.get_with_txn(txn, IS_INLINE).unwrap_or(false);
 
+  let compact_mode: bool = map_ref.get_with_txn(txn, COMPACT_MODE).unwrap_or(false);
+
   Some(DatabaseView {
     id,
     database_id,
@@ -432,6 +439,7 @@ pub fn view_from_map_ref<T: ReadTxn>(map_ref: &MapRef, txn: &T) -> Option<Databa
     created_at,
     modified_at,
     is_inline,
+    compact_mode,
   })
 }
 

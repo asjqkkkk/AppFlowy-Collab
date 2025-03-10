@@ -65,6 +65,8 @@ pub struct DatabaseView {
   pub modified_at: i64,
   #[serde(default)]
   pub is_inline: bool,
+  #[serde(default)]
+  pub compact_mode: bool,
 }
 
 impl DatabaseView {
